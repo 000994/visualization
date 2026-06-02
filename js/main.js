@@ -167,6 +167,80 @@ function refreshAll() {
   updateList();
   updateStats();
   updatePriceSummary();
+  updateTop10();
+  updateFilterSummary();
+}
+
+// ============================================================
+// TOP 10  (right column, vertical list)
+// ============================================================
+function updateTop10() {
+  var el = document.getElementById('top10-list');
+  if (!el) return;
+  var filtered = getFiltered();
+  var sorted = filtered.slice().sort(function(a, b) {
+    if (b.stars !== a.stars) return b.stars - a.stars;
+    return a.name.localeCompare(b.name);
+  });
+  var top10 = sorted.slice(0, 10);
+  var html = '';
+  var starColors = { 3: 'var(--color-star-3)', 2: 'var(--color-star-2)', 1: 'var(--color-star-1)' };
+  for (var i = 0; i < top10.length; i++) {
+    var r = top10[i];
+    var sc = starColors[r.stars];
+    html +=
+      '<div class="top10-item" data-lat="' + r.lat + '" data-lng="' + r.lng + '" data-url="' + r.url + '">' +
+      '<div class="top10-rank">' + (i + 1) + '</div>' +
+      '<div class="top10-name">' + r.name + '</div>' +
+      '<div class="top10-stars" style="color:' + sc + '">' + '&#9733;'.repeat(r.stars) + '</div>' +
+      '<div class="top10-meta">' + r.city + '</div>' +
+      '</div>';
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('.top10-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var r = allRestaurants.find(function(rr) { return rr.url === item.dataset.url; });
+      if (r) { flyToRestaurant(r); openDetail(r); }
+    });
+  });
+}
+
+// ============================================================
+// FILTER SUMMARY  (statistics text)
+// ============================================================
+function updateFilterSummary() {
+  var el = document.getElementById('filter-summary-text');
+  if (!el) return;
+  var f = getFiltered();
+  var parts = [];
+
+  var s1 = f.filter(function(r) { return r.stars === 1; }).length;
+  var s2 = f.filter(function(r) { return r.stars === 2; }).length;
+  var s3 = f.filter(function(r) { return r.stars === 3; }).length;
+  parts.push('<strong>' + f.length + '</strong> restaurants');
+  parts.push('&#9733; ' + s1 + ' &middot; &#9733;&#9733; ' + s2 + ' &middot; &#9733;&#9733;&#9733; ' + s3);
+
+  var prices = f.map(function(r) { return r.price; }).filter(function(p) { return p !== 'N/A'; });
+  if (prices.length > 0) {
+    var pm = { '$': 1, '$$': 2, '$$$': 3, '$$$$': 4, '$$$$$': 5 };
+    var nums = prices.map(function(p) { return pm[p] || 0; });
+    var avg = (nums.reduce(function(a, b) { return a + b; }, 0) / nums.length).toFixed(1);
+    var max = Math.max.apply(null, nums);
+    var maxLabel = Object.keys(pm).find(function(k) { return pm[k] === max; });
+    parts.push('Avg price: ' + avg + ' / Max: ' + maxLabel);
+  }
+
+  var regions = {};
+  f.forEach(function(r) { regions[r.region] = (regions[r.region] || 0) + 1; });
+  var regionCount = Object.keys(regions).length;
+  parts.push(regionCount + ' regions');
+
+  var cuisines = {};
+  f.forEach(function(r) { cuisines[r.cuisineGroup] = (cuisines[r.cuisineGroup] || 0) + 1; });
+  var topCuisine = Object.entries(cuisines).sort(function(a, b) { return b[1] - a[1]; })[0];
+  if (topCuisine) parts.push('Top: ' + topCuisine[0] + ' (' + topCuisine[1] + ')');
+
+  el.innerHTML = parts.join(' &nbsp;&middot; ');
 }
 
 // ============================================================
@@ -365,6 +439,8 @@ initCharts();
 updateMap();
 updateFavCount();
 updatePriceSummary();
+updateTop10();
+updateFilterSummary();
 map.invalidateSize();
 
 // Deep-link from hash

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    MICHELIN Guide — Global Star Visualization
    Design System & Layout (Left-Map-List Layout)
    ============================================================ */
@@ -119,13 +119,12 @@ header .logo h1 {
 }
 
 /* ============================================================
-   MAIN LAYOUT  —  LEFT (30%)  |  RIGHT (70%)
-   Right column splits into MAP (top) + LIST (bottom)
+   MAIN LAYOUT  —  LEFT (280px) | CENTER (1fr) | RIGHT (340px)
    ============================================================ */
 main {
   flex: 1;
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: 280px 1fr 340px;
   overflow: hidden;
   height: calc(100vh - 52px - 24px);
 }
@@ -305,14 +304,32 @@ main {
   min-height: 100px;
 }
 
+/* ============ CENTER COLUMN ============ */
+#center-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--color-bg);
+}
+
+#map-footer {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
 /* ============================================================
-   MAP  (right column, top)
+   MAP  (center column)
    ============================================================ */
 #map-container {
   position: relative;
-  min-height: 55vh;
-  flex-shrink: 0;
-  border-bottom: 1px solid var(--color-border);
+  flex: 1;
+  min-height: 300px;
 }
 
 #map {
@@ -322,27 +339,98 @@ main {
   inset: 0;
 }
 
-/* ============================================================
-   LIST  (right column, bottom)
-   ============================================================ */
-#list-section {
-  flex: 1;
+/* ============ RIGHT COLUMN ============ */
+#right-col {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
   background: var(--color-surface);
   transition: background var(--transition);
 }
 
-.list-header {
+/* ============================================================
+   TOP 10  (right column, top)
+   ============================================================ */
+#top10-section {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+#top10-section .list-header {
+  padding: 5px 14px;
+}
+#top10-section .list-header h3 {
+  font-size: 12px;
+}
+#top10-list {
+  overflow-y: auto;
+  max-height: 220px;
+  scrollbar-width: thin;
+}
+#top10-list::-webkit-scrollbar { width: 3px; }
+#top10-list::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
+.top10-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 14px;
+  gap: 8px;
+  padding: 4px 14px;
+  cursor: pointer;
+  transition: background var(--transition);
+  border-bottom: 1px solid var(--color-border);
+}
+.top10-item:last-child { border-bottom: none; }
+.top10-item:hover { background: var(--color-highlight); }
+
+.top10-item .top10-rank {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  min-width: 20px;
+  text-align: center;
+}
+.top10-item .top10-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.top10-item .top10-stars {
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 30px;
+  text-align: right;
+}
+.top10-item .top10-meta {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+  text-align: right;
+}
+
+/* ============================================================
+   FILTER SUMMARY  (right column)
+   ============================================================ */
+#filter-summary {
+  padding: 5px 14px;
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
+#filter-summary-text {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
 
+/* ============================================================
+   RESTAURANT LIST  (right column, scrollable)
+   ============================================================ */
 .list-header h3 {
   font-family: var(--font-display);
   font-size: 13px;
@@ -690,7 +778,7 @@ footer a { color: var(--color-text-muted); }
 @media (max-width: 900px) {
   main {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 45vh 1fr;
+    grid-template-rows: auto 40vh 1fr;
     height: calc(100vh - 48px - 24px);
   }
 
@@ -706,15 +794,22 @@ footer a { color: var(--color-text-muted); }
     overflow-y: auto;
   }
 
+  #center-col {
+    border-right: none;
+    min-height: 0;
+  }
+
   #right-col { min-height: 0; }
 
-  #map-container { min-height: 45vh; }
+  #map-container { min-height: 40vh; }
 
   #stats-panel { padding: 8px 10px; gap: 4px; }
   .stat-card { padding: 6px 2px; }
   .stat-card .stat-num { font-size: 20px; }
   #filter-panel { padding: 6px 10px; }
   .chart-wrap { min-height: 80px; }
+
+  #top10-list { max-height: 160px; }
 
   #detail-panel { width: 100%; right: -100%; }
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -104,9 +104,8 @@
     </div>
   </div>
 
-  <!-- ========== RIGHT COLUMN ========== -->
-  <div id="right-col">
-    <!-- MAP (top area) -->
+    <!-- ========== CENTER COLUMN: Map ========== -->
+  <div id="center-col">
     <div id="map-container">
       <div id="map"></div>
       <div id="viewport-stats"></div>
@@ -115,31 +114,47 @@
         <div class="legend-item"><span class="legend-dot" style="background:#C9A96E"></span> ★★★</div>
         <div class="legend-item"><span class="legend-dot" style="background:#A8A9AD"></span> ★★</div>
         <div class="legend-item"><span class="legend-dot" style="background:#B87333"></span> ★</div>
+            </div>
+    </div>
+    <div id="map-footer">
+      <span>&#x1F30D; <strong id="map-footer-count">0</strong> restaurants visible &#183; Drag to explore</span>
+    </div>
+  </div>
+
+  <!-- ========== RIGHT COLUMN: Top 10 + Filter Summary + List ========== -->
+  <div id="right-col">
+    <div id="top10-section">
+      <div class="list-header">
+        <h3>🏆 Top 10</h3>
+        <span id="top10-hint" style="font-size:10px;color:var(--color-text-muted)">Highest rated</span>
+      </div>
+      <div id="top10-list"></div>
+    </div>
+
+    <div id="filter-summary" class="list-header">
+      <div id="filter-summary-text"></div>
+    </div>
+
+    <div class="list-header">
+      <h3>🍽️ Restaurant List</h3>
+      <div class="list-controls">
+        <div class="sort-row">
+          <label>Sort</label>
+          <select id="sort-select">
+            <option value="name-asc">Name A→Z</option>
+            <option value="name-desc">Name Z→A</option>
+            <option value="stars-desc">Stars ↓</option>
+            <option value="stars-asc">Stars ↑</option>
+            <option value="price-asc">Price ↑</option>
+            <option value="price-desc">Price ↓</option>
+          </select>
+        </div>
+        <div id="price-summary"></div>
       </div>
     </div>
 
-    <!-- LIST + Detail (bottom area) -->
-    <div id="list-section">
-      <div class="list-header">
-        <h3>🍽️ Restaurant List</h3>
-        <div class="list-controls">
-          <div class="sort-row">
-            <label>Sort</label>
-            <select id="sort-select">
-              <option value="name-asc">Name A→Z</option>
-              <option value="name-desc">Name Z→A</option>
-              <option value="stars-desc">Stars ↓</option>
-              <option value="stars-asc">Stars ↑</option>
-              <option value="price-asc">Price ↑</option>
-              <option value="price-desc">Price ↓</option>
-            </select>
-          </div>
-          <div id="price-summary"></div>
-        </div>
-      </div>
-      <div id="restaurant-list">
-        <div class="no-results"><span class="no-results-icon">📍</span>Loading restaurants...</div>
-      </div>
+    <div id="restaurant-list">
+      <div class="no-results"><span class="no-results-icon">📍</span>Loading restaurants...</div>
     </div>
   </div>
 </main>

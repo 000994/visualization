@@ -1,4 +1,4 @@
-﻿/* Michelin Star Restaurants — Map Module
+/* Michelin Star Restaurants — Map Module
    Dependencies: Leaflet, Leaflet.markercluster, data.js, main.js (state, getFiltered, refreshAll) */
 
 var map = L.map('map', { zoomControl: true, preferCanvas: true }).setView([30, 10], 2.5);
@@ -140,13 +140,16 @@ map.on('moveend', function() {
       var inView = allRestaurants.filter(function(r) {
         return bounds.contains([r.lat, r.lng]);
       });
-      var el = document.getElementById('viewport-stats');
+            var el = document.getElementById('viewport-stats');
       if (el) {
         el.innerHTML = 'In view: <strong>' + inView.length + '</strong> restaurants';
         el.classList.add('visible');
         clearTimeout(el._hideTimer);
         el._hideTimer = setTimeout(function() { el.classList.remove('visible'); }, 5000);
       }
+      // Update map footer count
+      var footerCount = document.getElementById('map-footer-count');
+      if (footerCount) footerCount.textContent = inView.length;
     }
   }, 400);
 });
