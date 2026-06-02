@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michelin Star Restaurants — Global Guide 2018–2019</title>
+<meta name="description" content="Interactive visualization of 695 Michelin-starred restaurants worldwide (2018–2019). Explore one, two, and three-star restaurants on an interactive map with filters, charts, and detailed listings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">⭐</span>
+    <h1>MICHELIN Guide</h1>
+  </div>
+  <div class="header-right">
+    <span id="result-count">695 restaurants</span>
+    <button class="header-btn active" data-year="all">All Years</button>
+    <button class="header-btn" data-year="2019">2019</button>
+    <button class="header-btn" data-year="2018">2018</button>
+    <button class="header-btn" id="theme-toggle" title="Toggle dark mode">🌓</button>
+  </div>
+</header>
+
+<main>
+  <div id="map-container">
+    <div id="map"></div>
+    <div id="loader"><div class="spinner"></div></div>
+    <div id="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#C9A96E"></span> ★★★ Three Stars</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#A8A9AD"></span> ★★ Two Stars</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#B87333"></span> ★ One Star</div>
+    </div>
+  </div>
+
+  <aside id="sidebar">
+    <div id="stats-panel">
+      <div class="stat-card total active" data-filter="all">
+        <div class="stat-num" id="stat-total">695</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-card s3" data-filter="3">
+        <div class="stat-num" id="stat-3">36</div>
+        <div class="stat-label">★★★</div>
+      </div>
+      <div class="stat-card s2" data-filter="2">
+        <div class="stat-num" id="stat-2">110</div>
+        <div class="stat-label">★★</div>
+      </div>
+      <div class="stat-card s1" data-filter="1">
+        <div class="stat-num" id="stat-1">549</div>
+        <div class="stat-label">★</div>
+      </div>
+    </div>
+
+    <div id="filter-panel">
+      <div class="filter-row">
+        <label>Stars</label>
+        <button class="filter-chip active" data-type="star" data-val="1"><span class="dot" style="background:#B87333"></span>★</button>
+        <button class="filter-chip active" data-type="star" data-val="2"><span class="dot" style="background:#A8A9AD"></span>★★</button>
+        <button class="filter-chip active" data-type="star" data-val="3"><span class="dot" style="background:#C9A96E"></span>★★★</button>
+      </div>
+      <div class="filter-row">
+        <label>Price</label>
+        <button class="filter-chip active" data-type="price" data-val="$">$</button>
+        <button class="filter-chip active" data-type="price" data-val="$$">$$</button>
+        <button class="filter-chip active" data-type="price" data-val="$$$">$$$</button>
+        <button class="filter-chip active" data-type="price" data-val="$$$$">$$$$</button>
+        <button class="filter-chip active" data-type="price" data-val="$$$$$">$$$$$</button>
+        <button class="filter-chip active" data-type="price" data-val="N/A">N/A</button>
+      </div>
+      <div class="filter-row">
+        <label>Search</label>
+        <input type="text" id="search-input" placeholder="Search restaurant name...">
+        <button id="clear-filters">↺ Clear All</button>
+      </div>
+    </div>
+
+    <div id="charts-section">
+      <h3>Cuisine Distribution</h3>
+      <div class="chart-wrap"><canvas id="chart-cuisine"></canvas></div>
+      <h3>Region Distribution</h3>
+      <div class="chart-wrap"><canvas id="chart-region"></canvas></div>
+    </div>
+
+    <div id="list-section">
+      <h3>Restaurants</h3>
+      <div id="restaurant-list">
+        <div class="no-results"><span class="no-results-icon">📍</span>Loading restaurants...</div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<div id="detail-overlay">
+  <div id="detail-bg"></div>
+  <div id="detail-panel">
+    <button id="detail-close">✕</button>
+    <div id="detail-stars"></div>
+    <div id="detail-name"></div>
+    <div class="detail-row"><span class="dl">Cuisine</span><span class="dv" id="detail-cuisine"></span></div>
+    <div class="detail-row"><span class="dl">Price</span><span class="dv" id="detail-price"></span></div>
+    <div class="detail-row"><span class="dl">City</span><span class="dv" id="detail-city"></span></div>
+    <div class="detail-row"><span class="dl">Region</span><span class="dv" id="detail-region"></span></div>
+    <div class="detail-row"><span class="dl">Year</span><span class="dv" id="detail-year"></span></div>
+    <a id="detail-link" href="#" target="_blank" rel="noopener">View on MICHELIN Guide →</a>
+  </div>
+</div>
+
+<footer>
+  <span>Data: Michelin Guide 2018–2019</span>
+  <span>·</span>
+  <span>Map tiles © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></span>
+</footer>
+
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script defer src="js/data.js"></script>
+<script defer src="js/map.js"></script>
+<script defer src="js/chart.js"></script>
+<script defer src="js/main.js"></script>
+</body>
+</html>
